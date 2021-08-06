@@ -30,6 +30,8 @@ public class HelloController {
 	}
 	
 	@GetMapping("hello-api")
+	// ResponseBody 추가 시 viewResolver 대신 HttpMessageConverter가 동작 
+	// 문자열, json객체 등 자동 converting 해준다
 	@ResponseBody
 	public Hello helloApi(@RequestParam("name") String name) {
 		Hello hello = new Hello();
