@@ -3,11 +3,12 @@ package hello.hellospring.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
+import javax.transaction.Transactional;
 
 import hello.hellospring.domain.Member;
 import hello.hellospring.repository.MemberRepository;
 
+@Transactional
 public class MemberService {
 	
 	private final MemberRepository memberRepository;
@@ -23,10 +24,19 @@ public class MemberService {
 	 * 회원 가입 
 	 */
 	public Long join(Member member) {
-		validateDuplicateMember(member);
 		
-		memberRepository.save(member);
-		return member.getId();
+		long start = System.currentTimeMillis();
+		
+		try {
+			validateDuplicateMember(member);
+			
+			memberRepository.save(member);
+			return member.getId();
+		} finally {
+			long end = System.currentTimeMillis();
+			long timeMs = end - start;
+			System.out.println("join : " + timeMs + "ms");
+		}
 	}
 
 
@@ -45,7 +55,16 @@ public class MemberService {
 	 * 전체 회원 조회 
 	 */
 	public List<Member> findMembers() {
-		return memberRepository.findAll();
+		
+		long start = System.currentTimeMillis();
+		
+		try {
+			return memberRepository.findAll();
+		} finally {
+			long end = System.currentTimeMillis();
+			long timeMs = end - start;
+			System.out.println("join : " + timeMs + "ms");
+		}
 	}
 	
 	public Optional<Member> findMember(Long memberId) {
